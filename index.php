@@ -1,9 +1,11 @@
 <?php
 namespace App;
 use App\controller\UsuarioController as usuario;
+use App\controller\ProjetoController as projeto;
 use App\controller\LoginController as login;
 use App\util\Functions as Util;
 use App\dal\UsuarioDao;
+use App\dal\ProjetoDao;
 
 require_once("./autoload.php");
 require_once ('./util/functions.php');  
@@ -42,13 +44,15 @@ Util::gerarCSRF();
         $page = $_GET["p"] ?? "home";
         match($page){
             "home" => require_once("./view/home.php"),
+            "projects" => Projeto::listarProjetos(),
+            "altproj" => Projeto::um_altProj(),
             "login" => login::login(),
             "cadusr" => usuario::cadastrar(),
             //"recusr" => usuario::recuperar(),
             "profile" => usuario::profile(),
-            "listusr" => usuario::um_users(),
+            "users" => usuario::um_listar(),
             "altusr" => usuario::um_alterar(),
-            "delusr" => usuario::um_deluser(),
+            "delusr" => usuario::um_deletar(),
             default => require_once("./view/404.php")
         };
         ?>

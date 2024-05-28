@@ -15,46 +15,6 @@ Util::startSession();
 abstract class UsuarioController{
     private static $msg = null;
 
-    //Checar permissões
-    private static function checkUserPermission($id = null, $pass=null) {
-        if(isset($_SESSION['username']) && isset($_SESSION['user_id'])){
-            $MasterGroup = 2;
-            try {
-                    $usuario_por_username = UsuarioDao::buscarPorUsername($_SESSION['username']);
-                    $usuario_por_id = UsuarioDao::buscar($_SESSION['user_id']);
-                    $username_group = $usuario_por_username->__get('groupID');
-                    $id_group = $usuario_por_id->__get('groupID');
-    
-                    if ( $id_group == $MasterGroup && $username_group == $MasterGroup) {
-                        return;
-                    }
-                } catch (Exception $e) {
-                    die('Acesso negado. a');
-                }
-        }else{
-            die('Acesso negado. b');
-        }
-        
-
-        if (!isset($_SESSION['user_id'])) {
-            die('Acesso negado. c');
-        }
-
-        try {
-            $logado = UsuarioDao::buscarPorUsername($_SESSION['username']);
-
-            if ($_SESSION['user_id'] != $id) {
-                var_dump($_SESSION['user_id'] . " : ". $logado->__get('pass'));
-                die('Acesso negado. d');
-            }
-        } catch (Exception $e) {
-            die('Acesso negado. e');
-        }
-        if(!password_verify($pass, $logado->__get('pass'))) {
-            header('Location: ./?p='.$_GET['p'].'&alt='.$logado->__get('id').'&epw');       
-        }
-
-    }
     //para usuarios em geral
     public static function cadastrar(){
         if ($_SERVER["REQUEST_METHOD"] == "POST" AND
@@ -63,9 +23,12 @@ abstract class UsuarioController{
                 die('Falha na verificação CSRF.');
             } else {
 
-                if(isset($_POST['pass']) && strlen($_POST['pass']) < 8){
-                    die(header('Location: ./?p=cadusr' . '&ipw'));     
-                }
+                //TODO CRIAR AQUI OS CONDICIONAIS PARA O FORMULARIO DE CADASTRO
+
+                // SENHA MAIOR QUE 8 CARACTERES
+                // if(isset($_POST['pass']) && strlen($_POST['pass']) < 8){
+                //     header('Location: ./?p=cadusr' . '&ipw');     
+                // }
 
                 $usuario = new Usuario();
                 $usuario->iniciar(
@@ -130,8 +93,8 @@ abstract class UsuarioController{
                         telefone: Util::prepararTexto($_POST["telefone"]),
                         username: Util::prepararTexto($_POST["username"]),
                     );
-
-                    self::checkUserPermission($_POST["id"], $_POST['pass']);
+                    $ousuario = UsuarioDao::buscar($_SESSION['user_id']);
+                    Util::checkUserPermission($_POST["id"], $_POST['pass'], $ousuario);
     
                     try {
                         self::$msg = "Usuário atualizado com sucesso!";
@@ -149,11 +112,13 @@ abstract class UsuarioController{
 
     }
     //para usuarios master
-    public static function um_users(){
-        if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["p"]) && $_GET["p"] == 'listusr' && isset($_SESSION['username'])) {
-            self::checkUserPermission();
+    public static function um_listar(){
+        if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["p"]) && $_GET["p"] == 'users' && isset($_SESSION['username'])) {
+            
+            $ousuario = UsuarioDao::buscar($_SESSION['user_id']);
+            Util::checkUserPermission(null, null, $ousuario);
             $usuarios = UsuarioDao::listar();
-            MasterView::listar($usuarios, self::$msg);
+            MasterView::listarusuario($usuarios, self::$msg);
         }else{
             header('Location: ?p=e404');
         }
@@ -165,7 +130,8 @@ abstract class UsuarioController{
         self::$msg = null;
     
         if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["alt"])) {
-            self::checkUserPermission();
+            $ousuario = UsuarioDao::buscar($_SESSION['user_id']);
+            Util::checkUserPermission(null, null, $ousuario);
             $id = filter_var($_GET["alt"], FILTER_VALIDATE_INT);
             if ($id) {
                 try {
@@ -179,10 +145,11 @@ abstract class UsuarioController{
             }
 
             if($_GET["alt"] == $_SESSION['user_id']){
-                MasterView::alterar($usuario, self::$msg);
+                MasterView::alterarusuario($usuario, self::$msg);
             }else{
-                self::checkUserPermission();
-                MasterView::alterar($usuario, self::$msg);
+                $ousuario = UsuarioDao::buscar($_SESSION['user_id']);
+            Util::checkUserPermission(null, null, $ousuario);
+                MasterView::alterarusuario($usuario, self::$msg);
             }
             
         }else{
@@ -208,13 +175,13 @@ abstract class UsuarioController{
                         username: Util::prepararTexto($_POST["username"]),
                         pass: Util::prepararTexto($_POST["pass"]),
                     );
-
-                    self::checkUserPermission($_POST["id"], $usuario->__get('pass'));
+                    $ousuario = UsuarioDao::buscar($_SESSION['user_id']);
+                    Util::checkUserPermission($_POST["id"], $usuario->__get('pass'),$ousuario);
     
                     try {
                         self::$msg = "Usuário atualizado com sucesso!";
                         UsuarioDao::alterar($usuario);    
-                        header("Location:./?p=listusr");    
+                        header("Location:./?p=users");    
                     } catch(Exception $e) {
                         self::$msg = $e->getMessage();
                     }
@@ -225,15 +192,16 @@ abstract class UsuarioController{
         }
     }
 
-    public static function um_deluser(){
+    public static function um_deletar(){
         self::$msg = "";
         if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["del"])) {
             $id = filter_var($_GET["del"], FILTER_VALIDATE_INT);
             if ($id) {
-                self::checkUserPermission();
+                $ousuario = UsuarioDao::buscar($_SESSION['user_id']);
+                Util::checkUserPermission(null, null, $ousuario);
                 try {
                     UsuarioDao::excluir($id);
-                    header("Location:./?p=listusr");   
+                    header("Location:./?p=users");   
 
                 } catch(Exception $e) {
                     self::$msg = $e->getMessage();

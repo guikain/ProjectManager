@@ -9,7 +9,7 @@ abstract class UsuarioDao{
 
     public static function cadastrar(Usuario $usuario){
         try{
-            $pdo = Conn::getConn();
+            $pdo = Conn::getConn();// id, group, nome, sobrenome, data_nasc, cpf, ddd, telefone, user, pass
             $sql = $pdo->prepare("INSERT INTO usuarios VALUES (null, 1, ?, ?, ?, ?, ?, ?, ?, ?)");
             $sql-> execute([$usuario->__get("nome"), 
                             $usuario->__get("sobrenome"),

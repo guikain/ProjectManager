@@ -38,6 +38,7 @@ class LoginController {
                     if (password_verify($password, $user->__get('pass'))) {
                         $_SESSION['user_id'] = $user->__get('id');
                         $_SESSION['username'] = $user->__get('username');
+                        $_SESSION['user_group'] = $user->__get('groupID');
 
                         //TODO ALTERAR PARA ./?p=listproj
                         header("Location: ./");

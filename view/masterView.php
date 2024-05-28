@@ -5,7 +5,7 @@ use App\dal\UsuarioDao;
 
 class MasterView{
 
-    public static function listar($usuarios, $msg = null){
+    public static function listarusuario($usuarios, $msg = null){
         if (isset($msg)): ?>
             <div class="sucesso">
                 <?= $msg ?>
@@ -53,7 +53,7 @@ class MasterView{
         <?php
     }
 
-    public static function alterar($usuario = null, $msg = null) {
+    public static function alterarUsuario($usuario = null, $msg = null) {
         if (isset($msg)): ?>
             <div class="sucesso">
                 <?= $msg ?>
@@ -96,10 +96,95 @@ class MasterView{
             <label for="username">Usuário: </label>
             <input required type="text" name="username" id="username" maxlength="30" value="<?= $usuario ? $usuario->__get('username') : '' ?>">
     
-            <?php if (isset($_SESSION['username']) && UsuarioDao::buscarPorUsername($_SESSION['username'])->__get('groupID') == 1): ?>
-                <label for="pass">Senha: </label>
-                <input required type="password" name="pass" id="pass" maxlength="30" placeholder="Insira sua senha">
-            <?php endif; ?>
+            <button type="submit">Salvar</button>
+        </form>
+        <?php
+    }
+
+    public static function cadastrarProjeto($msg = null){
+        if (isset($msg)): ?>
+        <div class="sucesso">
+            <?= $msg ?>
+            <span class="close" onclick="this.parentElement.style.display='none'">&times;</span>        
+        </div>
+        <?php endif; 
+        if (isset($_GET['epw'])): ?>
+            <div class="erro">
+                <?= 'Senha Incorreta.' ?>
+                <span class="close" onclick="this.parentElement.style.display='none'">&times;</span>
+            </div>
+        <?php endif; ?>
+        <?php if (isset($_GET['ipw'])): ?>
+            <div class="erro">
+                <?= 'A senha requer pelo menos 8 caracteres' ?>
+                <span class="close" onclick="this.parentElement.style.display='none'">&times;</span>
+            </div>
+        <?php endif; ?>
+        
+            <form action="?p=cadusr" method="post">
+
+            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+
+            <label for="nome">Nome: </label>
+            <input type="text" name="nome" id="nome" required>
+
+            <label for="sobrenome">Sobrenome: </label>
+            <input type="text" name="sobrenome" id="sobrenome" required>
+
+            <label for="data_nascimento">Data de Nascimento: </label>
+            <input type="date" name="data_nascimento" id="data_nascimento" required>
+
+            <label for="cpf">CPF: </label>
+            <input type="text" name="cpf" id="cpf" maxlength="11" required> 
+
+            <label for="ddd">DDD: </label>
+            <input type="text" name="ddd" id="ddd" maxlength="2" required>
+
+            <label for="telefone">Telefone: </label>
+            <input type="text" name="telefone" id="telefone" maxlength="10" required>
+
+            <label for="username">Usuario: </label>
+            <input type="text" name="username" id="username" maxlength="30" required>
+
+            <label for="pass">Senha: </label>
+            <input type="password" name="pass" id="pass" maxlength="30" required>
+
+
+            <button type="submit">Salvar</button>
+            </form>
+        <?php
+    }
+
+    public static function alterarProjeto($projeto = null, $msg = null) {
+        if (isset($msg)): ?>
+            <div class="sucesso">
+                <?= $msg ?>
+                <span class="close" onclick="this.parentElement.style.display='none'">&times;</span>
+            </div>
+        <?php endif; 
+        if (isset($_GET['epw'])): ?>
+            <div class="erro">
+                <?= 'Senha Incorreta.' ?>
+                <span class="close" onclick="this.parentElement.style.display='none'">&times;</span>
+            </div>
+        <?php endif; ?>
+        
+        <form action="?p=altproj" method="post">
+
+            <input required type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
+            <input required type="hidden" name="id" value="<?= $projeto ? $projeto->__get('id') : '' ?>">
+
+            <label for="nome">Nome: </label>
+            <input required type="text" name="nome" id="nome" value="<?= $projeto ? $projeto->__get('nome') : '' ?>">
+    
+            <label for="prioridade">Prioridade: </label>
+            <input required type="text" name="prioridade" id="prioridade" value="<?= $projeto ? $projeto->__get('prioridade') : '' ?>">
+    
+            <label for="dificuldade">Dificuldade: </label>
+            <input required type="text" name="dificuldade" id="dificuldade" value="<?= $projeto ? $projeto->__get('dificuldade') : '' ?>">
+    
+            <label for="status">Status: </label>
+            <input required type="text" name="status" id="status" maxlength="11" value="<?= $projeto ? $projeto->__get('status') : '' ?>">
     
             <button type="submit">Salvar</button>
         </form>
