@@ -195,3 +195,32 @@ td {
         font-size: 14px;
         margin-bottom: 10px;
     }
+    /******************** Pagina de Erro ********************/
+    .container-erro{
+        display: flex;
+        align-items: center; 
+        justify-content: center; 
+        height: 400px;
+        background-color: rgba(128, 253, 128, 0.685);
+        padding: 15%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    .container-erro h1{
+        display: flex;
+        color: white;
+        text-shadow: 2px 2px 4px black;
+    }
+    .img{
+        position: fixed;
+        padding: 7px;
+        align-items: center;
+        height: 40px;
+    }
+    .mike{
+        padding: 5px;
+        height: 2px;
+        width: 500px;
+        background-color: rgba(2, 253, 2, 0.829);
+    }
