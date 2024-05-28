@@ -17,9 +17,21 @@ abstract class ProjetoController{
     private static $msg = null;
 
     public static function listarProjetos(){
-        if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["p"]) == 'projects') {
+        if ($_SERVER["REQUEST_METHOD"] == "GET") {
+
+            if(isset($_GET['join'])){
+                $ousuario = UsuarioDao::buscar($_SESSION['user_id']);
+                
+            }
+
+            $config = [
+                'isLoggedIn' => ( isset($_SESSION['username']) ) ? true : false,
+                'isAdmin' => ( isset($_SESSION['user_group']) && $_SESSION['user_group'] == '2' ) ? true : false,
+                'isJoined' => (true) ? true : false,
+            ];
+
             $projetos = ProjetoDao::listar();
-            ProjetoView::listar($projetos, self::$msg);
+            ProjetoView::listar($projetos, self::$msg, $config);
         }else{
             header('Location: ?p=e404');
         }
@@ -38,19 +50,19 @@ abstract class ProjetoController{
 
                 //TODO CRIAR AQUI OS CONDICIONAIS PARA O FORMULARIO DE CADASTRO
 
-                // SENHA MAIOR QUE 8 CARACTERES
+                // SENHA MAIOR QUE 8 CARACTERES CRIAR UM METODO PRA CHAMAR QUE FAÇA O SEGUINTE:
                 // if(isset($_POST['pass']) && strlen($_POST['pass']) < 8){
                 //     header('Location: ./?p=cadusr' . '&ipw');     
                 // }
 
                 $projeto = new Projeto();
                 $projeto->iniciar(
-                    id : Util::prepararTexto($_POST['id']),
                     nome: Util::prepararTexto($_POST["nome"]),
                     prioridade: Util::prepararTexto($_POST["prioridade"]),
                     dificuldade: Util::prepararTexto($_POST["dificuldade"]),
-                    data_inicio: Util::prepararTexto($_POST["data_inicio"]),
-                    data_fim: Util::prepararTexto($_POST["data_fim"]),
+                    data_inicio: date('Y-m-d', timestamp:time()),
+                    prazo: Util::prepararTexto($_POST["prazo"]),	
+                    data_fim: '-',
                     status: Util::prepararTexto($_POST["status"])
                 );
 
@@ -63,7 +75,7 @@ abstract class ProjetoController{
                 }
             }
         }
-        MasterView::cadastrarProjeto(self::$msg);
+        ProjetoView::cadastrar(self::$msg);
     }
 
     public static function um_altProj(){
@@ -88,13 +100,11 @@ abstract class ProjetoController{
                     self::$msg = "ID inválido.";
                     
                 }
-                 MasterView::alterarProjeto($projeto, self::$msg);
+                 ProjetoView::alterar($projeto, self::$msg);
             }else{
                 header('Location:./?p=login&npw');
             }   
-        }else{
-            header('Location: ?p=e404');
-        }
+        };
     
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["nome"])) {
             if (!isset($_POST['csrf_token']) || !Util::verificarCSRF($_POST['csrf_token'])) {
@@ -109,19 +119,17 @@ abstract class ProjetoController{
                         prioridade: Util::prepararTexto($_POST["prioridade"]),
                         dificuldade: Util::prepararTexto($_POST["dificuldade"]),
                         data_inicio: Util::prepararTexto($_POST["data_inicio"]),
+                        prazo: Util::prepararTexto($_POST["prazo"]),
                         data_fim: Util::prepararTexto($_POST["data_fim"]),
                         status: Util::prepararTexto($_POST["status"]),
                     );
-
-                    $ousuario = UsuarioDao::buscar($_SESSION['user_id']);
-                    Util::checkUserPermission($_POST["id"], $usuario->__get('pass'), $ousuario);
-                    try {
-                        self::$msg = "Usuário atualizado com sucesso!";
-                        ProjetoDao::alterar($usuario);    
-                        header("Location:./?p=users");    
-                    } catch(Exception $e) {
-                        self::$msg = $e->getMessage();
-                    }
+                        try {
+                            self::$msg = "Projeto atualizado com sucesso!";
+                            ProjetoDao::alterar($projeto);    
+                            header("Location:./?p=projects");    
+                        } catch(Exception $e) {
+                            self::$msg = $e->getMessage();
+                        }
                 } else {
                     self::$msg = "ID inválido.";
                 }
@@ -137,8 +145,8 @@ abstract class ProjetoController{
                 $ousuario = UsuarioDao::buscar($_SESSION['user_id']);
                 Util::checkUserPermission(null, null, $ousuario);
                 try {
-                    UsuarioDao::excluir($id);
-                    header("Location:./?p=users");   
+                    ProjetoDao::excluir($id);
+                    header("Location:./?p=projects");   
 
                 } catch(Exception $e) {
                     self::$msg = $e->getMessage();

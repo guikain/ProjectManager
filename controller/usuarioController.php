@@ -5,6 +5,7 @@ use App\util\Functions as Util;
 use App\model\Usuario;
 use App\dal\UsuarioDao;
 use App\view\UsuarioView;
+use App\view\LoginView;
 use App\view\MasterView;
 use \Exception;
 
@@ -39,14 +40,20 @@ abstract class UsuarioController{
                     ddd: Util::prepararTexto($_POST["ddd"]),
                     telefone: Util::prepararTexto($_POST["telefone"]),
                     username: Util::prepararTexto($_POST["username"]),
-                    pass: Util::prepararTexto($_POST["pass"]),
+                    pass: ($_POST["pass"]),
                 );
-                $usuario->__set('pass', $usuario->__get('pass'));
+                
+                $usuario->__set('pass', $usuario->__get('pass'));            
 
                 try{
                     self::$msg = "Usuário cadastrado com sucesso!";
                     UsuarioDao::cadastrar($usuario);
+
+                    //TODO entender como fazer isso sem get.
+                    loginView::login(self::$msg, false);
                     header('Location: ./?p=login');
+                    
+
                 }catch(Exception $e){
                     self::$msg = $e->getMessage();
                 }
@@ -118,7 +125,7 @@ abstract class UsuarioController{
             $ousuario = UsuarioDao::buscar($_SESSION['user_id']);
             Util::checkUserPermission(null, null, $ousuario);
             $usuarios = UsuarioDao::listar();
-            MasterView::listarusuario($usuarios, self::$msg);
+            UsuarioView::listar($usuarios, self::$msg);
         }else{
             header('Location: ?p=e404');
         }
@@ -145,15 +152,13 @@ abstract class UsuarioController{
             }
 
             if($_GET["alt"] == $_SESSION['user_id']){
-                MasterView::alterarusuario($usuario, self::$msg);
+                UsuarioView::alterar($usuario, self::$msg);
             }else{
                 $ousuario = UsuarioDao::buscar($_SESSION['user_id']);
             Util::checkUserPermission(null, null, $ousuario);
-                MasterView::alterarusuario($usuario, self::$msg);
+                UsuarioView::alterar($usuario, self::$msg);
             }
             
-        }else{
-            header('Location: ?p=e404');
         }
     
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["nome"])) {
@@ -173,7 +178,6 @@ abstract class UsuarioController{
                         ddd: Util::prepararTexto($_POST["ddd"]),
                         telefone: Util::prepararTexto($_POST["telefone"]),
                         username: Util::prepararTexto($_POST["username"]),
-                        pass: Util::prepararTexto($_POST["pass"]),
                     );
                     $ousuario = UsuarioDao::buscar($_SESSION['user_id']);
                     Util::checkUserPermission($_POST["id"], $usuario->__get('pass'),$ousuario);

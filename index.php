@@ -43,16 +43,33 @@ Util::gerarCSRF();
         <?php
         $page = $_GET["p"] ?? "home";
         match($page){
+
+        //acesso publico
+            //home
             "home" => require_once("./view/home.php"),
-            "projects" => Projeto::listarProjetos(),
-            "altproj" => Projeto::um_altProj(),
+
+            //login
             "login" => login::login(),
             "cadusr" => usuario::cadastrar(),
-            //"recusr" => usuario::recuperar(),
+            #"recusr" => usuario::recuperar(),
+
+            //projetos            
+            "projects" => Projeto::listarProjetos(),
+            #"myprojects" => Participa::listarProjetos(),
+
+            //usuarios
             "profile" => usuario::profile(),
+        
+        //acesso master
+            //projetos
+            "cadproj" => Projeto::um_cadProj(),
+            "altproj" => Projeto::um_altProj(),
+            "delproj" => Projeto::um_delProj(),
+            //usuarios
             "users" => usuario::um_listar(),
             "altusr" => usuario::um_alterar(),
             "delusr" => usuario::um_deletar(),
+
             default => require_once("./view/404.php")
         };
         ?>
