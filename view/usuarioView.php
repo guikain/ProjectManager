@@ -30,6 +30,9 @@ class UsuarioView
 
             <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
 
+
+        <div class="container">         
+            
             <label for="nome">Nome: </label>
             <input type="text" name="nome" id="nome" required>
 
@@ -56,7 +59,10 @@ class UsuarioView
 
 
             <button type="submit">Salvar</button>
-        </form>
+
+        </div>
+
+    </form>
         <?php
     }
     public static function profile($usuario = null, $msg = null)
@@ -78,6 +84,7 @@ class UsuarioView
 
             <input required type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>">
             <input required type="hidden" name="id" value="<?= $usuario ? $usuario->__get('id') : '' ?>">
+
 
             <label for="nome">Nome: </label>
             <input required type="text" name="nome" id="nome" value="<?= $usuario ? $usuario->__get('nome') : '' ?>">
@@ -104,6 +111,7 @@ class UsuarioView
             <input required type="password" name="pass" id="pass" maxlength="30" placeholder="Insira sua senha">
 
             <button type="submit">Salvar</button>
+        
         </form>
         <?php
     }

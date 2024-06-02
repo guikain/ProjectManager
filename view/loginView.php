@@ -13,14 +13,16 @@ class LoginView{
                 <?= $msg ?>
                 <span class="close" onclick="this.parentElement.style.display='none'">&times;</span>        
                 </div>
-        <?php endif; ?>
+        <?php endif; ?>  
         <?php if (isset($_GET['npw'])): ?>
             <div class="erro">
                 <?= 'Faça login para continuar' ?>
                 <span class="close" onclick="this.parentElement.style.display='none'">&times;</span>
             </div>
         <?php endif; ?>
-            <div class="login-container">
+
+
+            <div class="container">
                 <form action="?p=login" method="post">
                     <label for="username">Usuário: </label>
                     <input type="text" name="username" id="username" required>

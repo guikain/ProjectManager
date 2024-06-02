@@ -66,6 +66,25 @@ button[type="reset"] {
     cursor: pointer;
     border-radius: 5px;
 }
+/* Estilos para botões do tipo submit */
+button[type="submit"] {
+    background-color: rgba(0,255,127); 
+    border: none;
+    color: black;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+button[type="submit"]:hover {
+    background-color: rgba(0,255,0);
+}
+
+
 table {
     width: 100%;
 }
@@ -177,25 +196,67 @@ td {
     }
     /**************** FIM MENSAGENS ****************/
 
-    .login-container {
+/******************** Pagina de Login ********************/
+    .container {
         width: 450px;
         margin: 0 auto;
         padding: 20px;
-        background-color: #fff;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        border-radius: 5px;
-        
+        background-color: rgba(128, 300, 128);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+        border-radius: 15px;
     }
-    .login-container a {
+    /*Ajustar responsividade*/
+
+
+    .container-erro{
+        display: flex;
+        align-items: center; 
+        justify-content: center; 
+        height: 400px;
+        background-color: rgba(128, 253, 128, 0.685);
+        padding: 15%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+
+
+    .container:hover {
+        background-color: rgba(0,255,127);
+    }
+    .container input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: none;
+        border-bottom: 1px solid #ccc;
+        border-radius: 10px;
+    }
+    .button{
+        background-color: rgba(0,255,127);
+        color: black;
+    }
+    .container label{
+        color:black;
+        padding: 15px;
+    }
+    .login-container a:hover {
+        color:red;
+    }
+
+
+    .container a {
         text-decoration: none;
-        color: #42b983;
+        color: rgba(47,79,79);
         font-weight: bold;
         align-items: right;
         margin: 3%;
         font-size: 14px;
         margin-bottom: 10px;
     }
-    /******************** Pagina de Erro ********************/
+
+/******************** Pagina de Erro ********************/
     .container-erro{
         display: flex;
         align-items: center; 
