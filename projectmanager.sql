@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 09, 2024 at 09:49 PM
+-- Generation Time: Jun 09, 2024 at 09:56 PM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.18
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `projmgr`
+-- Database: `projectmanager`
 --
 
 -- --------------------------------------------------------
@@ -94,13 +94,15 @@ CREATE TABLE IF NOT EXISTS `vinculo` (
   `descricao` varchar(255) NOT NULL,
   `joined` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `vinculo`
 --
 
 INSERT INTO `vinculo` (`id`, `id_user_fk`, `id_projeto_fk`, `checkin`, `checkout`, `status`, `descricao`, `joined`) VALUES
+(25, 2, 1, '2024-06-09 21:51:06', '2024-06-09 21:51:06', 'FINALIZADO', '', 1),
+(26, 2, 1, '2024-06-09 21:51:06', '2024-06-09 21:51:23', 'FINALIZADO', 'trabalho concluido', 0),
 (21, 2, 1, '2024-06-09 21:42:07', '2024-06-09 21:42:07', 'FINALIZADO', '', 1),
 (22, 2, 1, '2024-06-09 21:42:07', '2024-06-09 21:42:12', 'FINALIZADO', 'xD', 0),
 (23, 2, 1, '2024-06-09 21:42:24', '2024-06-09 21:42:24', 'FINALIZADO', '', 1),
