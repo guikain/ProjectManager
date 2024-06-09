@@ -1,5 +1,6 @@
 <?php
 namespace App\model;
+use App\util\Functions as Util;
 
 class Usuario{
     private $id, $groupID, $nome, $sobrenome, $data_nascimento, $cpf, $ddd, $telefone, $username, $pass;

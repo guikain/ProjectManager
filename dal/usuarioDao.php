@@ -40,6 +40,38 @@ abstract class UsuarioDao{
         }
     }
 
+    public static function validarUnicidadeCPF($cpf) {
+        try {
+            $pdo = Conn::getConn();
+            $sql = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE cpf = :cpf");
+            $sql->bindParam(':cpf', $cpf, PDO::PARAM_STR);
+            $sql->execute();
+            $count = $sql->fetchColumn();
+
+            if ($count > 0) {
+                throw new Exception("O CPF já está em uso.");
+            }
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
+    public static function validarUnicidadeUsername($username) {
+        try {
+            $pdo = Conn::getConn();
+            $sql = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE username = :username");
+            $sql->bindParam(':username', $username, PDO::PARAM_STR);
+            $sql->execute();
+            $count = $sql->fetchColumn();
+
+            if ($count > 0) {
+                throw new Exception("O username já está em uso.");
+            }
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
+
     public static function buscar($id) {
         try {
             $conn = Conn::getConn();
@@ -101,19 +133,62 @@ abstract class UsuarioDao{
         }
     }
 
+    public static function buscarPorCPF($cpf) {
+        try {
+            $pdo = Conn::getConn();
+            $sql = $pdo->prepare("SELECT * FROM usuarios WHERE cpf = ?");
+            $sql->execute([$cpf]);
+            $user = $sql->fetch(PDO::FETCH_ASSOC);
+            
+            if ($user) {
+                $usuario = new Usuario();
+                $usuario->iniciar(
+                    id: $user['id'],
+                    groupID: $user['groupID'],
+                    nome: $user['nome'],
+                    sobrenome: $user['sobrenome'],
+                    data_nascimento: $user['data_nascimento'],
+                    cpf: $user['cpf'],
+                    ddd: $user['ddd'],
+                    telefone: $user['telefone'],
+                    username: $user['username'],
+                    pass: $user['pass']
+                );
+                return $usuario;
+            }
+            
+            return null;
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao buscar usuário: " . $e->getMessage(), 14);
+        }
+    }
+
     public static function alterar(Usuario $usuario){
         try {
             $pdo = Conn::getConn();
-            $sql = $pdo->prepare("UPDATE usuarios SET groupID = ?, nome = ?, sobrenome = ?, data_nascimento = ?, cpf = ?, ddd = ?, telefone = ?, username = ? WHERE id = ?");
+            $sql = $pdo->prepare("UPDATE usuarios SET groupID = ?, nome = ?, sobrenome = ?, ddd = ?, telefone = ?, username = ? WHERE id = ?");
             $sql->execute([
                 $usuario->__get("groupID"), 
                 $usuario->__get("nome"), 
                 $usuario->__get("sobrenome"),
-                $usuario->__get("data_nascimento"),
-                $usuario->__get("cpf"),
                 $usuario->__get("ddd"),
                 $usuario->__get("telefone"),
                 $usuario->__get("username"),
+                $usuario->__get("id")
+            ]);
+        } catch (PDOException $e) {
+            throw new Exception("Erro ao salvar no banco de dados: " . $e->getMessage(), 14);
+        } catch (Exception $e) {
+            throw new Exception("Ocorreu um erro inesperado: " . $e->getMessage() . $e->getCode());
+        }
+    }
+
+    public static function atualizarSenha(Usuario $usuario){
+        try {
+            $pdo = Conn::getConn();
+            $sql = $pdo->prepare("UPDATE usuarios SET pass = ? WHERE id = ?");
+            $sql->execute([
+                $usuario->__get("pass"), 
                 $usuario->__get("id")
             ]);
         } catch (PDOException $e) {

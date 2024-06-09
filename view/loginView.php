@@ -3,12 +3,16 @@ namespace App\view;
 
 class LoginView{
 
-    public static function login($msg = null){
-        if (isset($msg)): ?>
-            <div class="erro">
+    public static function login($msg = null, $Erro = null){
+        if (isset($msg)):
+            if (!isset($Erro)): ?>
+                <div class="erro"> 
+            <?php else: ?>
+                <div class="sucesso">
+            <?php endif; ?>
                 <?= $msg ?>
                 <span class="close" onclick="this.parentElement.style.display='none'">&times;</span>        
-            </div>
+                </div>
         <?php endif; ?>
         <?php if (isset($_GET['npw'])): ?>
             <div class="erro">
@@ -18,10 +22,10 @@ class LoginView{
         <?php endif; ?>
             <div class="login-container">
                 <form action="?p=login" method="post">
-                    <label for="username">Usuário:</label>
+                    <label for="username">Usuário: </label>
                     <input type="text" name="username" id="username" required>
                     
-                    <label for="password">Senha:</label>
+                    <label for="password">Senha: </label>
                     <input type="password" name="password" id="password" required>
                     
                     <button type="submit">Entrar</button>

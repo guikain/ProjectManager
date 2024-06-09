@@ -11,11 +11,12 @@ abstract class ProjetoDao{
         try{
             $pdo = Conn::getConn();
                                 // id, nome, prioridade, dificuldade, data_inicio, data_fim, status
-            $sql = $pdo->prepare("INSERT INTO projetos VALUES (null, 1, ?, ?, ?, ?, ?, ?)");
+            $sql = $pdo->prepare("INSERT INTO projetos VALUES (null, ?, ?, ?, ?, ?, ?, ?)");
             $sql-> execute([$projeto->__get("nome"), 
                             $projeto->__get("prioridade"),
                             $projeto->__get("dificuldade"),
                             $projeto->__get("data_inicio"),
+                            $projeto->__get("prazo"),
                             $projeto->__get("data_fim"),
                             $projeto->__get("status")
                         ]);
@@ -57,6 +58,7 @@ abstract class ProjetoDao{
                     prioridade: $proj['prioridade'],
                     dificuldade: $proj['dificuldade'],
                     data_inicio: $proj['data_inicio'],
+                    prazo: $proj['prazo'],
                     data_fim: $proj['data_fim'],
                     status: $proj['status'],
                 );
@@ -78,12 +80,13 @@ abstract class ProjetoDao{
             if ($proj) {
                 $projeto = new Projeto();
                 $projeto->iniciar(
-                    // id, nome, prioridade, dificuldade, data_inicio, data_fim, status
+                    // id, nome, prioridade, dificuldade, data_inicio, prazo, data_fim, status
                     id: $proj['id'],
                     nome: $proj['nome'],
                     prioridade: $proj['prioridade'],
                     dificuldade: $proj['dificuldade'],
                     data_inicio: $proj['data_inicio'],
+                    prazo: $proj['prazo'],
                     data_fim: $proj['data_fim'],
                     status: $proj['status'],
                 );
@@ -99,14 +102,15 @@ abstract class ProjetoDao{
     public static function alterar(Projeto $projeto){
         try {
             $pdo = Conn::getConn();
-            $sql = $pdo->prepare("UPDATE projetos SET nome = ?, prioridade = ?, dificuldade = ?, data_inicio = ?, data_fim = ?, status = ? WHERE id = ?");
+            $sql = $pdo->prepare("UPDATE projetos SET nome = ?, prioridade = ?, dificuldade = ?, prazo = ?, data_fim = ?, status = ? WHERE id = ?");
             $sql->execute([
                 $projeto->__get("nome"), 
                 $projeto->__get("prioridade"),
                 $projeto->__get("dificuldade"),
-                $projeto->__get("data_inicio"),
+                $projeto->__get('prazo'),
                 $projeto->__get("data_fim"),
                 $projeto->__get("status"),
+                $projeto->__get("id"),
             ]);
         } catch (PDOException $e) {
             throw new Exception("Erro ao salvar no banco de dados: " . $e->getMessage(), 14);
