@@ -5,7 +5,7 @@ class LoginView{
 
     public static function login($msg = null, $Erro = null){
         if (isset($msg)):
-            if (!isset($Erro)): ?>
+            if (isset($Erro)): ?>
                 <div class="erro"> 
             <?php else: ?>
                 <div class="sucesso">

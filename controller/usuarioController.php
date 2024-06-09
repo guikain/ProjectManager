@@ -173,7 +173,7 @@ abstract class UsuarioController{
                     try {
                         self::$msg = "Usuário atualizado com sucesso!";
                         UsuarioDao::alterar($usuario);    
-                        header("Location:./");    
+                        header("Location:./?p=projects");    
                     } catch(Exception $e) {
                         self::$msg = $e->getMessage();
                     }
@@ -281,7 +281,7 @@ abstract class UsuarioController{
         self::$msg = "";
         if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["del"])) {
             $id = filter_var($_GET["del"], FILTER_VALIDATE_INT);
-            if ($id) {
+            if ($id && $id != $_SESSION['user_id']) {
                 $ousuario = UsuarioDao::buscar($_SESSION['user_id']);
                 Util::checkUserPermission(null, null, $ousuario);
                 try {
@@ -338,7 +338,7 @@ abstract class UsuarioController{
                 try {
                     UsuarioDao::atualizarSenha($usuario);
                     self::$msg = "Senha alterada com sucesso!";
-                    UsuarioView::alterarSenha(self::$msg, $usuario, null);
+                    LoginView::login(self::$msg);
                 } catch (Exception $e) {
                     self::$msg = $e->getMessage();
                     UsuarioView::alterarSenha(self::$msg, $usuario, true);
