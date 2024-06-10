@@ -50,12 +50,18 @@ class LoginController {
                         exit();
                     } else {
                         $msg = "Credenciais inválidas.";
+                        LoginView::login($msg, true);
+                        exit();
                     }
                 } else {
                     $msg = "Usuário não encontrado.";
+                    LoginView::login($msg, true);
+                    exit();
                 }
             } catch (Exception $e) {
                 $msg = $e->getMessage();
+                LoginView::login($msg, true);
+                exit();
             }
         }
         LoginView::login($msg ?? null);
