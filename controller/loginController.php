@@ -64,6 +64,7 @@ class LoginController {
                 exit();
             }
         }
+
         LoginView::login($msg ?? null);
     }
 }
